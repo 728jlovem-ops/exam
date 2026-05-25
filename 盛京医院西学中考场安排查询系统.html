@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>盛京医院西学中考场查询</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #eef2f5;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 16px;
+        }
+        .card {
+            max-width: 560px;
+            width: 100%;
+            background: #fff;
+            border-radius: 48px;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #0b4b4f, #063235);
+            padding: 32px 24px 28px;
+            text-align: center;
+            color: white;
+        }
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 8px;
+        }
+        .header p {
+            font-size: 0.9rem;
+            opacity: 0.88;
+            margin-top: 8px;
+        }
+        .badge {
+            background: rgba(255,255,245,0.2);
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            margin-top: 14px;
+        }
+        .content {
+            padding: 32px 24px 38px;
+        }
+        .input-group {
+            margin-bottom: 28px;
+        }
+        .input-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+            color: #1a5c5f;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 15px 18px;
+            font-size: 1rem;
+            border: 1.5px solid #e2edf2;
+            border-radius: 44px;
+            background: #fff;
+            outline: none;
+        }
+        .input-group input:focus {
+            border-color: #2c7a7b;
+            box-shadow: 0 0 0 3px rgba(44,122,123,0.2);
+        }
+        .btn {
+            width: 100%;
+            background: #1f6e6f;
+            border: none;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            border-radius: 60px;
+            cursor: pointer;
+            margin: 8px 0 24px;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+        }
+        .btn:active {
+            transform: scale(0.97);
+            background: #0f5859;
+        }
+        .result {
+            background: #f9fdfe;
+            border-radius: 36px;
+            padding: 20px 22px;
+            border-left: 5px solid #2c7a7b;
+            display: none;
+        }
+        .result-title {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #124c50;
+            margin-bottom: 16px;
+            border-bottom: 2px dashed #cbdbe2;
+            padding-bottom: 8px;
+        }
+        .result-row {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 8px 0;
+            border-bottom: 1px solid #eef2f5;
+        }
+        .result-label {
+            font-weight: 700;
+            width: 85px;
+            color: #2a6b6f;
+        }
+        .result-value {
+            flex: 1;
+            color: #1f3a3e;
+        }
+        .subject-box {
+            background: #eef4f7;
+            padding: 10px 14px;
+            border-radius: 28px;
+            margin-top: 6px;
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+        .not-found {
+            background: #fff7ec;
+            border-left-color: #e67e22;
+        }
+        .not-found .result-title {
+            color: #b85c00;
+        }
+        .footer {
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 28px;
+            color: #7c9aa3;
+            background: #f0f5f7;
+            padding: 12px 16px;
+            border-radius: 50px;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="header">
+        <h1>📋 2025年盛京医院<br>西学中考场安排查询</h1>
+        <p>中医基础理论 · 中医诊断学 · 中药学</p>
+        <div class="badge">🏥 第二批 | 2025级 | 南湖院区</div>
+    </div>
+    <div class="content">
+        <div class="input-group">
+            <label>📇 姓名</label>
+            <input type="text" id="name" placeholder="请输入真实姓名">
+        </div>
+        <div class="input-group">
+            <label>🆔 员工号</label>
+            <input type="text" id="empid" placeholder="请输入员工号">
+        </div>
+        <button class="btn" id="searchBtn">🔍 立即查询</button>
+        <div id="resultArea" class="result"></div>
+        <div class="footer">
+            💡 考试时间：2026年5月30日（周六）<br>
+            地点：盛京医院南湖院区6号楼1楼101/102教室
+        </div>
+    </div>
+</div>
+
+<script>
+// ========== 全部学员数据 (共102人) ==========
+const students = [
+    {name:"郭韵",empid:"1000013768",room:"盛京医院南湖院区6号楼1楼101教室",seat:1},
+    {name:"徐内利",empid:"1000801079",room:"盛京医院南湖院区6号楼1楼101教室",seat:2},
+    {name:"王晓凤",empid:"1000801265",room:"盛京医院南湖院区6号楼1楼101教室",seat:3},
+    {name:"沈海涛",empid:"1000800012",room:"盛京医院南湖院区6号楼1楼101教室",seat:4},
+    {name:"崔粮驿",empid:"1000801469",room:"盛京医院南湖院区6号楼1楼101教室",seat:5},
+    {name:"宫婷婷",empid:"1000800766",room:"盛京医院南湖院区6号楼1楼101教室",seat:6},
+    {name:"李宝俊",empid:"1000800975",room:"盛京医院南湖院区6号楼1楼101教室",seat:7},
+    {name:"张瑶",empid:"1000800581",room:"盛京医院南湖院区6号楼1楼101教室",seat:8},
+    {name:"李博",empid:"1000800439",room:"盛京医院南湖院区6号楼1楼101教室",seat:9},
+    {name:"马宁耶",empid:"1000800584",room:"盛京医院南湖院区6号楼1楼101教室",seat:10},
+    {name:"潘新",empid:"1000801066",room:"盛京医院南湖院区6号楼1楼101教室",seat:11},
+    {name:"尚尉",empid:"1000801635",room:"盛京医院南湖院区6号楼1楼101教室",seat:12},
+    {name:"张进",empid:"1000800204",room:"盛京医院南湖院区6号楼1楼101教室",seat:13},
+    {name:"林琳",empid:"1000800005",room:"盛京医院南湖院区6号楼1楼101教室",seat:14},
+    {name:"李钰",empid:"1000800001",room:"盛京医院南湖院区6号楼1楼101教室",seat:15},
+    {name:"张强",empid:"1000800155",room:"盛京医院南湖院区6号楼1楼101教室",seat:16},
+    {name:"刘泉波",empid:"1000801210",room:"盛京医院南湖院区6号楼1楼101教室",seat:17},
+    {name:"刘宏博",empid:"1000013533",room:"盛京医院南湖院区6号楼1楼101教室",seat:18},
+    {name:"张立新",empid:"1000013777",room:"盛京医院南湖院区6号楼1楼101教室",seat:19},
+    {name:"孙师",empid:"1000800534",room:"盛京医院南湖院区6号楼1楼101教室",seat:20},
+    {name:"赵利娜",empid:"1000800917",room:"盛京医院南湖院区6号楼1楼101教室",seat:21},
+    {name:"宋雨修",empid:"1000801303",room:"盛京医院南湖院区6号楼1楼101教室",seat:22},
+    {name:"宝音",empid:"1000801302",room:"盛京医院南湖院区6号楼1楼101教室",seat:23},
+    {name:"尹艳梅",empid:"1000014290",room:"盛京医院南湖院区6号楼1楼101教室",seat:24},
+    {name:"李琳",empid:"1000014174",room:"盛京医院南湖院区6号楼1楼101教室",seat:25},
+    {name:"刘洪亮",empid:"1000800283",room:"盛京医院南湖院区6号楼1楼101教室",seat:26},
+    {name:"陈学云",empid:"1000800114",room:"盛京医院南湖院区6号楼1楼101教室",seat:27},
+    {name:"何庆权",empid:"1000800506",room:"盛京医院南湖院区6号楼1楼101教室",seat:28},
+    {name:"刘旭佳",empid:"1000800874",room:"盛京医院南湖院区6号楼1楼101教室",seat:29},
+    {name:"刘学敏",empid:"1000801629",room:"盛京医院南湖院区6号楼1楼101教室",seat:30},
+    {name:"伍可心",empid:"1000801305",room:"盛京医院南湖院区6号楼1楼101教室",seat:31},
+    {name:"徐阳",empid:"1000800898",room:"盛京医院南湖院区6号楼1楼101教室",seat:32},
+    {name:"燕桢",empid:"1000801358",room:"盛京医院南湖院区6号楼1楼101教室",seat:33},
+    {name:"周洁",empid:"1000801238",room:"盛京医院南湖院区6号楼1楼101教室",seat:34},
+    {name:"李致池",empid:"1000014431",room:"盛京医院南湖院区6号楼1楼101教室",seat:35},
+    {name:"吴严",empid:"1000014378",room:"盛京医院南湖院区6号楼1楼101教室",seat:36},
+    {name:"王晓琴",empid:"1000011441",room:"盛京医院南湖院区6号楼1楼101教室",seat:37},
+    {name:"孙洪利",empid:"1000013547",room:"盛京医院南湖院区6号楼1楼101教室",seat:38},
+    {name:"孙英冬",empid:"1000014108",room:"盛京医院南湖院区6号楼1楼101教室",seat:39},
+    {name:"刘翀",empid:"1000800313",room:"盛京医院南湖院区6号楼1楼101教室",seat:40},
+    {name:"吴迪",empid:"1000800523",room:"盛京医院南湖院区6号楼1楼101教室",seat:41},
+    {name:"刘磊",empid:"1000800175",room:"盛京医院南湖院区6号楼1楼101教室",seat:42},
+    {name:"陈鑫莹",empid:"1000800750",room:"盛京医院南湖院区6号楼1楼101教室",seat:43},
+    {name:"季策",empid:"1000801159",room:"盛京医院南湖院区6号楼1楼101教室",seat:44},
+    {name:"杨劭劼",empid:"1000014360",room:"盛京医院南湖院区6号楼1楼101教室",seat:45},
+    {name:"孙淼",empid:"1000014114",room:"盛京医院南湖院区6号楼1楼101教室",seat:46},
+    {name:"孙广萍",empid:"1000011307",room:"盛京医院南湖院区6号楼1楼101教室",seat:47},
+    {name:"郝庆",empid:"1000011288",room:"盛京医院南湖院区6号楼1楼101教室",seat:48},
+    {name:"杨颖",empid:"1000800007",room:"盛京医院南湖院区6号楼1楼101教室",seat:49},
+    {name:"解莹",empid:"1000800156",room:"盛京医院南湖院区6号楼1楼101教室",seat:50},
+    {name:"肖琳",empid:"1000800741",room:"盛京医院南湖院区6号楼1楼102教室",seat:1},
+    {name:"宋函憶",empid:"1000013846",room:"盛京医院南湖院区6号楼1楼102教室",seat:2},
+    {name:"张亚杰",empid:"1000013953",room:"盛京医院南湖院区6号楼1楼102教室",seat:3},
+    {name:"姚鑫洁",empid:"1000801347",room:"盛京医院南湖院区6号楼1楼102教室",seat:4},
+    {name:"王学清",empid:"1000011371",room:"盛京医院南湖院区6号楼1楼102教室",seat:5},
+    {name:"孙妍",empid:"1000014178",room:"盛京医院南湖院区6号楼1楼102教室",seat:6},
+    {name:"秦芳芳",empid:"1000800410",room:"盛京医院南湖院区6号楼1楼102教室",seat:7},
+    {name:"岳原亦",empid:"1000014126",room:"盛京医院南湖院区6号楼1楼102教室",seat:8},
+    {name:"林艳",empid:"1000013539",room:"盛京医院南湖院区6号楼1楼102教室",seat:9},
+    {name:"张喆",empid:"1000800704",room:"盛京医院南湖院区6号楼1楼102教室",seat:10},
+    {name:"邴浩",empid:"1000801193",room:"盛京医院南湖院区6号楼1楼102教室",seat:11},
+    {name:"梅晨雪",empid:"1000014124",room:"盛京医院南湖院区6号楼1楼102教室",seat:12},
+    {name:"杨俊",empid:"1000800176",room:"盛京医院南湖院区6号楼1楼102教室",seat:13},
+    {name:"谭悦",empid:"1000800168",room:"盛京医院南湖院区6号楼1楼102教室",seat:14},
+    {name:"谢瑶峰",empid:"1000801211",room:"盛京医院南湖院区6号楼1楼102教室",seat:15},
+    {name:"刘双双",empid:"1000800270",room:"盛京医院南湖院区6号楼1楼102教室",seat:16},
+    {name:"万继业",empid:"1000800743",room:"盛京医院南湖院区6号楼1楼102教室",seat:17},
+    {name:"苏福祥",empid:"1000014202",room:"盛京医院南湖院区6号楼1楼102教室",seat:18},
+    {name:"廖爱军",empid:"1000011333",room:"盛京医院南湖院区6号楼1楼102教室",seat:19},
+    {name:"李迎春",empid:"1000013021",room:"盛京医院南湖院区6号楼1楼102教室",seat:20},
+    {name:"闫顺朝",empid:"1000013786",room:"盛京医院南湖院区6号楼1楼102教室",seat:21},
+    {name:"迟峰",empid:"1000800188",room:"盛京医院南湖院区6号楼1楼102教室",seat:22},
+    {name:"邹佳运",empid:"1000801152",room:"盛京医院南湖院区6号楼1楼102教室",seat:23},
+    {name:"费倩",empid:"1000800517",room:"盛京医院南湖院区6号楼1楼102教室",seat:24},
+    {name:"陈佳佳",empid:"1000800484",room:"盛京医院南湖院区6号楼1楼102教室",seat:25},
+    {name:"齐晓莹",empid:"1000800520",room:"盛京医院南湖院区6号楼1楼102教室",seat:26},
+    {name:"荆薇",empid:"1000800366",room:"盛京医院南湖院区6号楼1楼102教室",seat:27},
+    {name:"谷潇",empid:"1000013866",room:"盛京医院南湖院区6号楼1楼102教室",seat:28},
+    {name:"刘洋",empid:"1000800159",room:"盛京医院南湖院区6号楼1楼102教室",seat:29},
+    {name:"刘彩刚",empid:"1000800948",room:"盛京医院南湖院区6号楼1楼102教室",seat:30},
+    {name:"赵毅",empid:"1000011261",room:"盛京医院南湖院区6号楼1楼102教室",seat:31},
+    {name:"顾玺",empid:"1000013625",room:"盛京医院南湖院区6号楼1楼102教室",seat:32},
+    {name:"牛楠",empid:"1000800397",room:"盛京医院南湖院区6号楼1楼102教室",seat:33},
+    {name:"薛今琦",empid:"1000800427",room:"盛京医院南湖院区6号楼1楼102教室",seat:34},
+    {name:"陈光磊",empid:"1000801195",room:"盛京医院南湖院区6号楼1楼102教室",seat:35},
+    {name:"孙丽莎",empid:"1000801176",room:"盛京医院南湖院区6号楼1楼102教室",seat:36},
+    {name:"贾实",empid:"1000800014",room:"盛京医院南湖院区6号楼1楼102教室",seat:37},
+    {name:"于宏",empid:"1000800972",room:"盛京医院南湖院区6号楼1楼102教室",seat:38},
+    {name:"宋国庆",empid:"1000800241",room:"盛京医院南湖院区6号楼1楼102教室",seat:39},
+    {name:"王一通",empid:"1000800620",room:"盛京医院南湖院区6号楼1楼102教室",seat:40},
+    {name:"郭娇",empid:"1000801052",room:"盛京医院南湖院区6号楼1楼102教室",seat:41},
+    {name:"韩晔",empid:"1000800429",room:"盛京医院南湖院区6号楼1楼102教室",seat:42},
+    {name:"汤艳清",empid:"1000014368",room:"盛京医院南湖院区6号楼1楼102教室",seat:43},
+    {name:"孔令韬",empid:"1000014367",room:"盛京医院南湖院区6号楼1楼102教室",seat:44},
+    {name:"白宇",empid:"1000013831",room:"盛京医院南湖院区6号楼1楼102教室",seat:45},
+    {name:"崔雪娇",empid:"1000013831",room:"盛京医院南湖院区6号楼1楼102教室",seat:46},
+    {name:"杜润雨",empid:"1000014101",room:"盛京医院南湖院区6号楼1楼102教室",seat:47},
+    {name:"邵滢",empid:"1000801026",room:"盛京医院南湖院区6号楼1楼102教室",seat:48},
+    {name:"孙莹",empid:"1000801026",room:"盛京医院南湖院区6号楼1楼102教室",seat:49},
+    {name:"张乐",empid:"1000013949",room:"盛京医院南湖院区6号楼1楼102教室",seat:50},
+    {name:"李艳君",empid:"1000800312",room:"盛京医院南湖院区6号楼1楼102教室",seat:51},
+    {name:"邵云",empid:"1000013628",room:"盛京医院南湖院区6号楼1楼102教室",seat:52}
+];
+
+// 构建快速查询 Map
+const studentMap = new Map();
+students.forEach(s => {
+    studentMap.set(`${s.name}|${s.empid}`, s);
+});
+
+// 页面逻辑
+const nameInput = document.getElementById('name');
+const empidInput = document.getElementById('empid');
+const searchBtn = document.getElementById('searchBtn');
+const resultArea = document.getElementById('resultArea');
+
+function showResult(student) {
+    resultArea.style.display = 'block';
+    if (!student) {
+        resultArea.className = 'result not-found';
+        resultArea.innerHTML = `
+            <div class="result-title">⚠️ 未查询到</div>
+            <div style="padding: 10px 0;">您不在此班级中，请确认姓名和员工号后重新查询。</div>
+            <div style="font-size: 0.8rem; background: #fff0e0; padding: 10px; border-radius: 20px; margin-top: 10px;">
+                📌 请核对：<br>
+                • 姓名与报名时完全一致（无空格）<br>
+                • 员工号输入准确无误
+            </div>
+        `;
+        return;
+    }
+    
+    resultArea.className = 'result';
+    resultArea.innerHTML = `
+        <div class="result-title">✅ 考试安排</div>
+        <div class="result-row"><div class="result-label">姓名</div><div class="result-value">${student.name}</div></div>
+        <div class="result-row"><div class="result-label">员工号</div><div class="result-value">${student.empid}</div></div>
+        <div class="result-row"><div class="result-label">考试日期</div><div class="result-value">2026年5月30日（周六）</div></div>
+        <div class="result-row"><div class="result-label">科目时间</div><div class="result-value"><div class="subject-box">📖 中医基础理论 8:30-9:30<br>📖 中医诊断学 9:40-10:40<br>📖 中药学 10:50-11:50</div></div></div>
+        <div class="result-row"><div class="result-label">考场</div><div class="result-value">${student.room}</div></div>
+        <div class="result-row"><div class="result-label">座位号</div><div class="result-value"><span style="background:#e0f0f0; padding:4px 14px; border-radius:30px;">${student.seat}</span></div></div>
+        <div class="result-row"><div class="result-label">备注</div><div class="result-value">请携带有效证件，提前20分钟入场</div></div>
+    `;
+}
+
+function search() {
+    const name = nameInput.value.trim();
+    const empid = empidInput.value.trim();
+    
+    if (!name || !empid) {
+        resultArea.style.display = 'block';
+        resultArea.className = 'result not-found';
+        resultArea.innerHTML = `<div class="result-title">📛 信息不完整</div><div>请同时填写姓名和员工号。</div>`;
+        return;
+    }
+    
+    const key = `${name}|${empid}`;
+    const found = studentMap.get(key);
+    showResult(found || null);
+}
+
+searchBtn.addEventListener('click', search);
+[nameInput, empidInput].forEach(input => {
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') search();
+    });
+});
+</script>
+</body>
+</html>
